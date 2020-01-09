@@ -28,7 +28,7 @@
     </div>
     <transition name="bounce">
       <div id="resbox" v-show="showRes">
-        <p @click="showRes = false">{{ categoryName }}抽奖结果：</p>
+        <p @click="showRes = false" :style="{color:'#ff0'}">{{ categoryName }}抽奖结果：</p>
         <div class="container">
           <span
             v-for="item in resArr"
@@ -43,9 +43,9 @@
               :style="{
                 fontSize: list[item - 1] && list[item - 1].name ? '36px' : null,
                 lineHeight:
-                  list[item - 1] && list[item - 1].name ? '80px' : null
+                  list[item - 1] && list[item - 1].name ? '30px' : null
               }"
-              v-if="!photos.find(d => d.id === item)"
+              v-if="photos.find(d => d.id === item)"
             >
               <span v-if="list[item - 1] && list[item - 1].name">
                 {{ list[item - 1].name }}
@@ -60,6 +60,7 @@
               alt="photo"
               :width="160"
               :height="160"
+              :style="{marginTop: '15px'}"
             />
           </span>
         </div>
@@ -210,9 +211,9 @@ export default {
   },
   mounted() {
     this.startTagCanvas();
-    setTimeout(() => {
-      this.getPhoto();
-    }, 1000);
+    //setTimeout(() => {
+    //  this.getPhoto();
+    //}, 1000);
   },
   methods: {
     getPhoto() {
@@ -280,7 +281,6 @@ export default {
           num
         );
         this.resArr = resArr;
-
         this.category = category;
         if (!this.result[category]) {
           this.$set(this.result, category, []);
@@ -301,7 +301,7 @@ export default {
 #root {
   height: 100%;
   position: relative;
-  background-image: url('./assets/bg.jpg');
+  background-image: url('./assets/bg1.jpg');
   background-size: 100% 100%;
   background-position: center center;
   background-repeat: no-repeat;
@@ -365,13 +365,14 @@ export default {
   .itemres {
     background: #fff;
     width: 160px;
-    height: 160px;
     border-radius: 4px;
     border: 1px solid #ccc;
     line-height: 160px;
     font-weight: bold;
     margin-right: 20px;
-    margin-top: 70px;
+    margin-top: 50px;
+    padding-top:15px;
+    padding-bottom:15px; 
     cursor: pointer;
     display: flex;
     flex-direction: column;

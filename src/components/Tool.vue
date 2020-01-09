@@ -6,10 +6,10 @@
     <el-button size="mini" @click="resetConfig">
       重置
     </el-button>
-    <el-button size="mini" @click="showImport = true">
+    <el-button size="mini" @click="showImport = true" :disabled="true">
       导入名单
     </el-button>
-    <el-button size="mini" @click="showImportphoto = true">
+    <el-button size="mini" @click="showImportphoto = true" :disabled="true">
       导入照片
     </el-button>
     <el-dialog
@@ -233,6 +233,7 @@ export default {
         this.$message.error('没有数据');
       }
       const list = [];
+      const photos = [];
       const rows = listStr.split('\n');
       if (rows && rows.length > 0) {
         rows.forEach(item => {
@@ -242,14 +243,19 @@ export default {
             const name = rowList[1].trim();
             key &&
               list.push({
-                key,
-                name
+                key, // 工号
+                name // 姓名
+              });
+            key && photos.push({
+                id: key,
+                value: require('@/assets/avatars/'+key+'.jpg')
               });
           }
         });
       }
-      this.$store.commit('setList', list);
 
+      this.$store.commit('setList', list);
+      this.$store.commit('setPhotos', photos);
       this.$message({
         message: '保存成功',
         type: 'success'

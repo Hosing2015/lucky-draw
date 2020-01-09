@@ -24,7 +24,12 @@
       "
     >
       <span class="name">
-        {{ item.name }}
+        {{ item.name + (item.label == 'specialAward' ? '「免裁券」':
+        item.label == 'firstPrize' ? '「 MacPro 」' :
+        item.label == 'secondPrize' ? '「华为 Mate 30 Pro 」' :
+        item.label == 'thirdPrize' ? '「华为 Mate 30 」' :
+        item.label == 'fourthPrize' ? '「红包 300 元 」' :
+        item.label == 'fifthPrize' ? '「 红包 100 元 」' : '' ) }}
       </span>
       <span class="value">
         <span v-if="item.value && item.value.length === 0">
@@ -32,7 +37,7 @@
         </span>
         <span
           class="card"
-          v-for="(data, j) in item.value"
+          v-for="(data, j) in item.realName"
           :key="j"
           :data-res="data"
         >
@@ -63,7 +68,7 @@ export default {
       for (const key in this.result) {
         if (this.result.hasOwnProperty(key)) {
           const element = this.result[key];
-          let name = conversionCategoryName(key);
+          let name = conversionCategoryName(key);          
           list.push({
             label: key,
             name,
@@ -71,12 +76,33 @@ export default {
           });
         }
       }
-      return list;
+      const all = this.$store.state.list;
+      const newList = list.map((item)=>{
+        let realName = [];
+        for ( const k in item.value) {
+          const value = item.value[k];          
+          for ( const p in all ) {
+            if ( value == all[p].key ) {
+              const name = all[p].name;
+              realName.push(name);
+            }
+          }
+        }
+        item.realName = realName;
+        return item;
+      })
+      return newList;
     }
   },
   methods: {
     deleteRes(event, row) {
-      const Index = getDomData(event.target, 'res');
+      const value = getDomData(event.target, 'res');
+      let Index = '';
+      for ( const key in row.realName ) {
+        if ( value == row.realName[key] ) {
+          Index = row.value[key]
+        }
+      }
       if (!Index) {
         return;
       }
@@ -114,7 +140,8 @@ export default {
     display: flex;
     line-height: 30px;
     .name {
-      width: 80px;
+      width: 200px;
+      color: red; 
       font-weight: bold;
     }
     .value {
@@ -122,12 +149,11 @@ export default {
     }
     .card {
       display: inline-block;
-      width: 40px;
+      width: 60px;
       height: 40px;
       line-height: 40px;
       text-align: center;
       font-size: 18px;
-      font-weight: bold;
       border-radius: 4px;
       border: 1px solid #ccc;
       background-color: #f2f2f2;
